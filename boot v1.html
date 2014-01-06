@@ -1,0 +1,331 @@
+echo <<<WIDG
+    <!--link href="css/bootstrap.css" rel="stylesheet"-->
+	<style>
+	.content{background:#fff;}
+	.workarea{
+		height:200px;
+		background: url(parts/qup_white.png) no-repeat 10px 50%;
+                position:relative;
+	}
+	.workarea.red{background-image:url(parts/qup_red.png);}
+	.workarea.blue{background-image:url(parts/qup_blue.png);}
+	.workarea.yellow{background-image:url(parts/qup_yellow.png);}
+	.workarea.straddle {
+		background-image: url("parts/qup_white.png"),url("parts/qup_white.png"),url("parts/prong_rollers.png");
+		background-size: auto 50px, auto 50px, auto 50px;
+		background-position-x: 50px,500px, 307px;
+	}
+	.workarea.straddle.slot1 {background-position-x: 10px,600px, 407px;}
+	.workarea.straddle.slot2 {background-position-x: 10px,683px, 483px;}
+	.workarea.red.straddle{background-image:url(parts/qup_red.png),url(parts/qup_red.png), url(parts/prong_rollers.png);}
+	.workarea.blue.straddle{background-image:url(parts/qup_blue.png),url(parts/qup_blue.png), url(parts/prong_rollers.png);}
+	.workarea.yellow.straddle{background-image:url(parts/qup_yellow.png),url(parts/qup_yellow.png), url(parts/prong_rollers.png);}
+	.workarea.straddle img{height:50px;}
+	.tabbable{min-height: 300px;}
+	
+	.draggable.item span {
+		display: block;
+	}
+	.draggable.item {
+		float: left;
+		margin: 5px 15px;
+	}
+	.conct {
+		position: absolute;
+		top: 50px;
+		left: 519px;
+	}
+	.end	{
+		position: absolute;
+		top: 50px;
+		left: 735px;
+	}
+	.rod {left:-170px;}
+	.straddle .conct{
+		top:129px;
+	}
+	</style>
+
+    <h1>Build</h1>
+		<div id='single' class='workarea' ondrop="drop_wa(event)" ondragover="allowDrop(event)">
+		
+		</div>
+		<div id='straddle' class='workarea straddle' style="display:none;" ondrop="drop_wa2(event)" ondragover="allowDrop2(event)" ondragleave="drag_out(event)">
+			<!--img src='parts/prong_rollers.png' style="position: absolute;top: 129px;left: 407px;" draggable='false' /-->
+		</div>
+
+		<div class="tabbable tabs-left" ondrop="drop(event)" ondragover="allowDrop(event)">
+			<ul class="nav nav-tabs" data-tabs="tabs">
+				<li class="active"><a data-toggle="tab" href="#Config">Configuration</a></li>
+				<li><a data-toggle="tab" href="#Seal">Sealing Elements</a></li>
+				<li><a data-toggle="tab" href="#Collars">Connectors</a></li>
+				<li><a data-toggle="tab" href="#Ends">Ends</a></li>
+			</ul>
+			<div class="tab-content">
+				<div id="Config" class="tab-pane active">
+					<div class="btn-group" data-toggle="buttons">
+					<label class="btn btn-default active">
+						<input type="radio" name="inputWalls" id="inputWalls" value="single" onclick='showworkarea("single")' checked>
+					Single Bridge Plug </label>
+					<label class="btn btn-default">
+						<input type="radio" name="inputWalls" id="inputWalls" value="straddle" onclick='showworkarea("straddle")'>
+					Straddle System</label>
+					</div>
+				</div>
+				<div id="Seal" class="tab-pane">
+					<h4>Sealing Elements</h4>
+					<div class='draggable item'>
+						<img src='parts/blue.jpg' id='seal_1' draggable="true" ondragstart="drag(event)" />
+						<span>HSN</span>
+					</div>
+					<div class='draggable item'>
+						<img src='parts/white.jpg' id='seal_2' draggable="true" ondragstart="drag(event)" />
+						<span>Viton</span>
+					</div>
+					<div class='draggable item'>
+						<img src='parts/yellow.jpg' id='seal_3' draggable="true" ondragstart="drag(event)" />
+						<span>Aaflas</span>
+					</div>
+					<div class='draggable item'>
+						<img src='parts/red.jpg' id='seal_4' draggable="true" ondragstart="drag(event)" />
+						<span>Floro Elastomer</span>
+					</div>
+				</div>
+				<div id="Collars" class="tab-pane">
+					<h4>Connectors</h4>
+					<div class='draggable item'>
+						<img src='parts/kobes_equlisation_housing.png' width="150px" id='conct_kobes' draggable="true" ondragstart="drag(event)" />
+						<span>Kobes Equl. Housing</span>
+					</div>
+					<div class='draggable item'>
+						<img src='parts/tandem_coller.png' id='conct_tandem' width="150px" draggable="true" ondragstart="drag(event)" />
+						<span>Tandem Coller</span>
+					</div>
+					<div class='draggable item'>
+						<img src='parts/tandem_coller_roller.png' id='conct_tandemr' width="150px" draggable="true" ondragstart="drag(event)" />
+						<span>Tandem Roller Coller</span>
+					</div>
+					<div class='draggable item'>
+						<img src='parts/flow_tube.png' id='ext_flow' width="150px" draggable="true" ondragstart="drag(event)" />
+						<span>Extension Flow Tube</span>
+					</div>
+				</div>
+				<div id="Ends" class="tab-pane">
+					<h4>Ends</h4>
+					<div class='draggable item'>
+						<img src='parts/debris_catcher.png' width="150px" id='end_debris' draggable="true" ondragstart="drag(event)" />
+						<span>Debris Catcher</span>
+					</div>
+					<div class='draggable item'>
+						<img src='parts/debris_catcher_guagehanger.png' width="150px" id='end_debrisg' draggable="true" ondragstart="drag(event)" />
+						<span>Debris Catcher Guage Hanger</span>
+					</div>
+					<div class='draggable item'>
+						<img src='parts/prong_housing.png' width="150px" id='conct_prong' draggable="true" ondragstart="drag(event)" />
+						<span>Prong Housing</span>
+					</div>
+					<div class='draggable item'>
+						<img src='parts/pump_through.png' width="150px" id='end_pumpthrough' draggable="true" ondragstart="drag(event)" />
+						<span>Pump Through Housing</span>
+					</div>
+					<div class='draggable item'>
+						<img src='parts/choke.png' width="150px" id='end_choke' draggable="true" ondragstart="drag(event)" />
+						<span>Choke Housing</span>
+					</div>
+				</div>
+
+			</div>
+		</div>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <!--script src="https://code.jquery.com/jquery.js"></script-->
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <!--script src="scripts/bootstrap.min.js"></script-->
+	<script>
+		var wa2slots = new Array();
+		var wa2nextSlot = 0;
+		var dragging = false;
+		$(function () {
+		//tabs
+			$('.nav-tabs a').click(function (e) {
+				e.preventDefault();
+				$(this).parent().parent().children().removeClass('active');
+				$(this).parent().addClass('active');
+				$('.tab-content div').removeClass('active');
+				$($(this).attr('href')).addClass('active');
+			});
+		});
+		function showworkarea(area){
+			if(area=='straddle'){
+				$('#single').hide();
+				$('#straddle').show();
+			}else{
+				$('#single').show();
+				$('#straddle').hide();
+			}
+		}
+		//drag n drop
+		function allowDrop(ev){
+			ev.preventDefault();
+		}
+		function allowDrop2(ev){
+			ev.preventDefault();
+			makeroom(ev);
+		}
+		function drag_out(ev){
+			ev.preventDefault();
+			dragging = false;
+			removeroom(ev);
+		}
+		function makeroom(ev){
+			var data=ev.dataTransfer.getData("Text");
+			data = data.split('_');
+			if(data[0] != 'seal'){
+			//console.log('addclass');
+				$('.workarea.straddle').addClass('slot'+(wa2nextSlot+1));
+			}
+		}
+		function removeroom(ev){
+			//if(wa2nextSlot == 0){
+				$('.workarea.straddle').removeClass('slot'+(wa2nextSlot+1));
+			//}
+		}
+		function addpart(part){
+			$(part).css('left',(262+(wa2nextSlot * 110)) + 'px');
+			$('#straddle').append(part);
+			wa2slots.push(part);
+			wa2nextSlot += 1;
+		}
+		function drag(ev){
+			ev.dataTransfer.setData("Text",ev.target.id);
+			dragging = true;
+		}
+		function drop_wa(ev){
+			dragging = false;
+			ev.preventDefault();
+			var data=ev.dataTransfer.getData("Text");
+			/* I'm changing the background image in css for the QUP,		
+			but adding img dom nodes for the rest */
+			
+			data = data.split('_');
+			switch(data[0]){
+				case "seal":
+					changeSeal(data[1]);	
+					break;
+				case "conct":
+					$('.conct').remove();
+					switch(data[1]){
+						case "kobes":
+							$('#single').append(
+								$("<img src='parts/kobes_equlisation_housing.png' class='conct' id='wa_conct_kobes' draggable='true' ondragstart='drag(event)' />")
+							).append(
+								$("<img src='parts/kobes_rod.png' class='end rod' id='wa_rod_kobesrod' draggable='false' />")
+							)
+							break;
+						case "tandem":
+							$('#single').append(
+								$("<img src='parts/tandem_coller.png' class='conct' id='wa_conct_tandem' draggable='true' ondragstart='drag(event)' />")
+							);
+							break;
+						case "tandemr":
+							$('#single').append(
+								$("<img src='parts/tandem_coller_roller.png' class='conct' id='wa_conct_tandemr' draggable='true' ondragstart='drag(event)' />")
+							);
+							break;
+						case "prong":
+							$('#single').append(
+								$("<img src='parts/prong_housing.png' class='conct' id='wa_conct_prong' draggable='true' ondragstart='drag(event)' />")
+							);
+							$('.end').remove();
+							break;
+					}
+					break;
+				case "end":
+					$('.end').remove();
+					$('#wa_conct_prong').remove();
+					switch(data[1]){
+						case "debris":
+							$('#single').append(
+								$("<img src='parts/debris_catcher.png' class='end' id='wa_end_debris' draggable='true' ondragstart='drag(event)' />")
+							).append(
+								$("<img src='parts/prong_rod.png' class='end rod' id='wa_rod_prongrod' draggable='false' />")
+							);
+							break;
+						case "debrisg":
+							$('#single').append(
+								$("<img src='parts/debris_catcher_guagehanger.png' class='end' id='wa_end_debrisg' draggable='true' ondragstart='drag(event)' />")
+							).append(
+								$("<img src='parts/prong_rod.png' class='end rod' id='wa_rod_prongrod' draggable='false' />")
+							);
+							break;
+						case "pumpthrough":
+							$('#single').append(
+								$("<img src='parts/pump_through.png' class='end' id='wa_end_pump_through' draggable='true' ondragstart='drag(event)' />")
+							);
+							break;
+						case "choke":
+							$('#single').append(
+								$("<img src='parts/choke.png' class='end' id='wa_end_choke' draggable='true' ondragstart='drag(event)' />")
+							);
+							break;
+					}
+					break;
+			}
+		}
+		function drop_wa2(ev){
+			dragging = false;
+			ev.preventDefault();
+			var data=ev.dataTransfer.getData("Text");
+			data = data.split('_');
+			switch(data[0]){
+				case "seal":
+					changeSeal(data[1]);	
+					break;
+				case "conct":
+					switch(data[1]){
+						case "tandemr":
+							addpart(
+								$("<img src='parts/tandem_coller_roller.png' class='conct' id='wa2_conct_tandemr' draggable='true' ondragstart='drag(event)' />")
+							);
+						break;
+					}
+				break;
+				case "ext":
+					switch(data[1]){
+						case "flow":
+							addpart(
+								$("<img src='parts/flow_tube.png' class='conct' id='wa2_ext_flow' draggable='true' ondragstart='drag(event)' />")
+							);
+						break;
+					}
+				break;
+			}
+			
+		}
+		function drop(ev){
+			/* remove stuff from the wa when dragged to the tabs area */
+			ev.preventDefault();
+			var data=ev.dataTransfer.getData("Text");
+			if(data.split('_')[0] == 'wa'){
+				$('#'+data).remove();
+				$('.rod').remove();
+			}
+		}
+		function changeSeal(color){
+		//$('.workarea').removeClass("red").removeClass("yellow").removeClass("blue");
+		switch(color) {
+			case "1":
+			  $('.workarea').removeClass("red").removeClass("yellow").addClass("blue");
+			  break;
+			case "2":
+			  $('.workarea').removeClass("red").removeClass("yellow").removeClass("blue");
+			  break;
+			case "3":
+			  $('.workarea').removeClass("red").removeClass("blue").addClass("yellow");
+			  break;
+			case "4":
+			  $('.workarea').removeClass("yellow").removeClass("blue").addClass("red");
+			  break;
+		}
+		}
+	</script>
+WIDG;
