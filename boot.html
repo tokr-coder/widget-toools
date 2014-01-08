@@ -62,9 +62,13 @@
 		<div id='single' class='workarea' ondrop="drop_wa(event)" ondragover="allowDrop(event)">
 		
 		</div>
-		<div id='straddle' class='workarea straddle' style="display:none;" ondrop="drop_wa2(event)" ondragover="allowDrop2(event)" ondragleave="drag_out(event)">
+		<div id='straddle' class='workarea straddle' style="display:none;" ondrop="drop_wa2(event)" ondragover="allowDrop2(event)">
 			<div class='qup parts slot1' id='qup1' draggable='false'></div>
-			<img class='parts slot2' id='prong_rollers' src='parts/prong_rollers.png' draggable='false' />
+			<div id="piecesStraddle">
+				<img class='parts slot2' id='prong_rollers' src='parts/prong_rollers.png' draggable='false' />	
+
+			</div>
+			
 			<div class='qup parts slot3' id='qup2' draggable='false' ></div>
 		</div>
 
@@ -72,8 +76,10 @@
 			<ul class="nav nav-tabs" data-tabs="tabs">
 				<li class="active"><a data-toggle="tab" href="#Config">Configuration</a></li>
 				<li><a data-toggle="tab" href="#Seal">Sealing Elements</a></li>
-				<li><a data-toggle="tab" href="#Collars">Connectors</a></li>
-				<li><a data-toggle="tab" href="#Ends">Ends</a></li>
+				<li id="liCollars"><a data-toggle="tab" href="#Collars">Connectors</a></li>
+				<li id="liEnds"><a data-toggle="tab" href="#Ends">Ends</a></li>
+				<li id="comboStraddle" style="display:none;"><a data-toggle="tab" href="#combo">Connectors</a></li>
+
 			</ul>
 			<div class="tab-content">
 				<div id="Config" class="tab-pane active">
@@ -119,10 +125,6 @@
 						<img src='parts/tandem_coller_roller.png' id='conct_tandemr' width="150px" draggable="true" ondragstart="drag(event)" />
 						<span>Tandem Roller Coller</span>
 					</div>
-					<div class='draggable item'>
-						<img src='parts/flow_tube.png' id='ext_flow' width="150px" draggable="true" ondragstart="drag(event)" />
-						<span>Extension Flow Tube</span>
-					</div>
 				</div>
 				<div id="Ends" class="tab-pane">
 					<h4>Ends</h4>
@@ -147,51 +149,71 @@
 						<span>Choke Housing</span>
 					</div>
 				</div>
-
+				<div id="combo" class="tab-pane">
+					<h4>Connectors</h4>
+					<div class='draggable item'>
+						<label>Number of pieces</label>
+						<select id="numberPieces">
+						  <option selected>0</option>
+						  <option value="1">1</option>
+						  <option value="2">2</option>
+						</select>
+						<img src='parts/tandem_coller_roller.png' id='conct_tandemr' width="150px" />
+						<img src='parts/flow_tube.png' id='ext_flow' width="150px" style='margin-left: -45px;' />
+						<span>Tandem Roller Coller + Extension Flow Tube</span>
+					</div>
+				</div>
 			</div>
 		</div>
+		<div>
+			<h1 id="form">Form Order for Single Bridge Plug</h1>
+			<label>Seal type</label>
+			<input type="text" id="sealSelected" value="Viton" disabled>
+			<label class="single">Connector field</label>
+			<input class="single" type="text" id="connector" disabled>
+			<label class="single">End piece field</label>
+			<input class="single" type="text" id="endField" disabled>
+			<label class="straddleLabel" style="display:none;">Collar/flowtube count field</label>
+			<input type="text" id="CollarFlow" class="straddleLabel" disabled style="display:none;">
+			<label>Comments</label>
+			<textarea id="comments"></textarea>
+			<br>
+
+			<button type="button" id="submit">Submit Order</button>
+			
+		</div>
+
 </div>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://code.jquery.com/jquery.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <!--script src="scripts/bootstrap.min.js"></script-->
 	<script>
+		var typeOrder = 1;
+
 		function Part(part,connect,over){
-			this.part = part;//jq object
-			this.connect = connect;//used for left and right connectability (male, female, none | 1, -1, 0)
-			this.over = over;//might be used for the size of the overlap of parts
+			this.part = part;
+			this.connect = connect;
+			this.over = over;
 		}
 		function partdragover(ev){
 			//is mouse on the left or right half
-			//var data=ev.dataTransfer.getData("Text");
-			//data = data.split('_');
-			//if(data[0] != 'seal'){
-				var targetwidth = $(ev.target).width();
-				var mrelpos = ev.originalEvent.offsetX;
-				if(mrelpos < (targetwidth / 2)){
-					$(ev.target).css('padding-left','150px').css('padding-right','');
-				}else{
-					$(ev.target).css('padding-right','150px').css('padding-left','');
-				}
-			//}
+			var targetwidth = $(ev.target).width();
+			var mrelpos = ev.originalEvent.offsetX;
+			if(mrelpos < (targetwidth / 2)){
+				$(ev.target).css('padding-left','150px').css('padding-right','');
+			}else{
+				$(ev.target).css('padding-right','150px').css('padding-left','');
+			}
 			//console.log('mouse:p:' + ev.originalEvent.pageX + '  o:' + ev.originalEvent.offsetX + '  pos.left ' + $(ev.target).position().left);
 			//move to make space (set margin left)
 		}
 		function partdragleave(ev){
-			//reset the margins when leaving the work area when nothing was dropped
 			$(ev.target).css('padding-left','').css('padding-right','');
 		}
-		var wa2slots = new Array();
-		//set up the 3 non-draggable parts that you start with
-		wa2slots.push(new Part($('#qup1'),{left:-1,right:1},{left: 0, right: 0}));
-		wa2slots.push(new Part($('#prong_rollers'),{left:-1,right:0},{left: 0, right: 0}));
-		wa2slots.push(new Part($('#qup2'),{left:0,right:0},{left: 0, right: 0}));
-		for(var i=0; i < wa2slots.length; i++){
-			wa2slots[i].part.on('dragover', partdragover)
-			wa2slots[i].part.on('dragleave', partdragleave)
-		}
-		var wa2nextSlot = 0;
+		
 		var dragging = false;
+
 		$(function () {
 		//tabs
 			$('.nav-tabs a').click(function (e) {
@@ -202,49 +224,93 @@
 				$($(this).attr('href')).addClass('active');
 			});
 		});
-		function showworkarea(area){
-		//switch between the straddle / single configuration
-			if(area=='straddle'){
-				$('#single').hide();
-				$('#straddle').show();
+
+		$('#numberPieces').on('change',function(event){
+			event.preventDefault();
+			addPieces($('#numberPieces').val());
+			$('#CollarFlow').val($('#numberPieces').val());
+
+		});
+
+		$('#submit').on('click',function(event){
+			event.preventDefault();
+			if(typeOrder == 1){ //Order Symple
+				if($('#connector').val()=="" || $('#endField').val()=="")
+					alert("Incomplete pieces");
+				else{
+					//make order
+					alert("making order");
+				}
+			}else{ // Order Straddle
+				if($('#CollarFlow').val()=="0")
+					alert("The number of connectors must be greater than zero");
+				else{
+					//make order
+					alert("making order");
+				}
+			}
+			
+		});
+
+		function addPieces(number){
+			if(number == 0){
+			$('#piecesStraddle').html("<img class='parts slot2' id='prong_rollers' src='parts/prong_rollers.png' draggable='false' />	")
+				
 			}else{
-				$('#single').show();
-				$('#straddle').hide();
+				var htmlImages = "";
+				for(var i=0;i<number;i++){
+					if(i==0)
+					htmlImages+="<img class='parts slot2' id='prong_rollers' src='parts/tandem_coller_roller.png' draggable='false' />";
+					else
+						htmlImages+="<img class='parts slot2' id='prong_rollers' src='parts/tandem_coller_roller.png' draggable='false' style='margin-left: -45px;'/>";
+					htmlImages+="<img class='parts slot2' id='prong_rollers' src='parts/flow_tube.png' draggable='false' style='margin-left: -45px;' />";
+				}
+				htmlImages +="<img class='parts slot2' id='prong_rollers' src='parts/prong_rollers.png' draggable='false' style='margin-left: -45px;' />";
+				$('#piecesStraddle').html(htmlImages);
 			}
 		}
+
+		function showworkarea(area){
+			if(area=='straddle'){
+				typeOrder = 2;
+				$('#single').hide();
+				$('#liEnds').hide();
+				$('#liCollars').hide();
+				$('.single').hide();
+				$('#comboStraddle').show();
+				$('#straddle').show();
+				addPieces(0);
+				$('#form').text("Form Order for Straddle System");
+				$('.straddleLabel').show();
+				$('.workarea.straddle .qup').removeClass("red").removeClass("yellow").removeClass("blue");
+				$('#sealSelected').val("Viton");
+				$('#CollarFlow').val("0");
+				$('#comments').val("");
+			}else{
+				typeOrder = 1;
+				$('#single').show();
+				$('#liEnds').show();
+				$('#liCollars').show();
+				$('#straddle').hide();
+				$('#comboStraddle').hide();
+				$('#form').text("Form Order for Single Bridge Plug");
+				$('.straddleLabel').hide();
+				$('.single').show();
+				$('.workarea').removeClass("red").removeClass("yellow").removeClass("blue");
+				$('#sealSelected').val("Viton");
+				$('#comments').val("");
+			}
+		}
+
 		//drag n drop
 		function allowDrop(ev){
 			ev.preventDefault();
 		}
 		function allowDrop2(ev){
 			ev.preventDefault();
-			//makeroom(ev);
+			
 		}
-		function drag_out(ev){
-			ev.preventDefault();
-			dragging = false;
-			//removeroom(ev);
-		}
-/*		function makeroom(ev){
-			var data=ev.dataTransfer.getData("Text");
-			data = data.split('_');
-			if(data[0] != 'seal'){
-			//console.log('addclass');
-				$('.workarea.straddle').addClass('slot'+(wa2nextSlot+1));
-			}
-		}*/
-/*		function removeroom(ev){
-			//if(wa2nextSlot == 0){
-				$('.workarea.straddle').removeClass('slot'+(wa2nextSlot+1));
-			//}
-		}*/
-		function addpart(part){
-			//add the dropped part to the DOM and save it
-			$(part).css('left',(262+(wa2nextSlot * 110)) + 'px');
-			$('#straddle').append(part);
-			wa2slots.push(part);
-			wa2nextSlot += 1;
-		}
+
 		function drag(ev){
 			ev.dataTransfer.setData("Text",ev.target.id);
 			dragging = true;
@@ -253,6 +319,7 @@
 			dragging = false;
 			ev.preventDefault();
 			var data=ev.dataTransfer.getData("Text");
+
 			/* I'm changing the background image in css for the QUP,		
 			but adding img dom nodes for the rest */
 			
@@ -265,23 +332,28 @@
 					$('.conct').remove();
 					switch(data[1]){
 						case "kobes":
+							$('#connector').val("Kobes Equl. Housing");
 							$('#single').append(
 								$("<img src='parts/kobes_equlisation_housing.png' class='conct' id='wa_conct_kobes' draggable='true' ondragstart='drag(event)' />")
-							)/*.append(
+							).append(
 								$("<img src='parts/kobes_rod.png' class='end rod' id='wa_rod_kobesrod' draggable='false' />")
-							)*/
+							)
 							break;
 						case "tandem":
+						    $('#connector').val("Tamdem Coller");
 							$('#single').append(
 								$("<img src='parts/tandem_coller.png' class='conct' id='wa_conct_tandem' draggable='true' ondragstart='drag(event)' />")
 							);
 							break;
 						case "tandemr":
+						    $('#connector').val("Tamdem Roller Coller");
 							$('#single').append(
 								$("<img src='parts/tandem_coller_roller.png' class='conct' id='wa_conct_tandemr' draggable='true' ondragstart='drag(event)' />")
 							);
 							break;
 						case "prong":
+							$('#connector').val("Prong Housing");
+							$('#endField').val("-");
 							$('#single').append(
 								$("<img src='parts/prong_housing.png' class='conct' id='wa_conct_prong' draggable='true' ondragstart='drag(event)' />")
 							);
@@ -292,8 +364,12 @@
 				case "end":
 					$('.end').remove();
 					$('#wa_conct_prong').remove();
+					if($('#connector').val()=="Prong Housing"){
+						$('#connector').val("");
+					}
 					switch(data[1]){
 						case "debris":
+						    $('#endField').val("Debris Catcher");
 							$('#single').append(
 								$("<img src='parts/debris_catcher.png' class='end' id='wa_end_debris' draggable='true' ondragstart='drag(event)' />")
 							).append(
@@ -301,6 +377,7 @@
 							);
 							break;
 						case "debrisg":
+						    $('#endField').val("Debris Catcher Guage Hanger");
 							$('#single').append(
 								$("<img src='parts/debris_catcher_guagehanger.png' class='end' id='wa_end_debrisg' draggable='true' ondragstart='drag(event)' />")
 							).append(
@@ -308,11 +385,13 @@
 							);
 							break;
 						case "pumpthrough":
+						    $('#endField').val("Pump Through Housing");
 							$('#single').append(
 								$("<img src='parts/pump_through.png' class='end' id='wa_end_pump_through' draggable='true' ondragstart='drag(event)' />")
 							);
 							break;
 						case "choke":
+						    $('#endField').val("Choke Housing");
 							$('#single').append(
 								$("<img src='parts/choke.png' class='end' id='wa_end_choke' draggable='true' ondragstart='drag(event)' />")
 							);
@@ -328,25 +407,9 @@
 			data = data.split('_');
 			switch(data[0]){
 				case "seal":
-					changeSeal(data[1]);	
+					changeSeal2(data[1]);	
 					break;
-				case "conct":
-					switch(data[1]){
-						case "tandemr":
-							addpart(
-								$("<img src='parts/tandem_coller_roller.png' class='conct' id='wa2_conct_tandemr' draggable='true' ondragstart='drag(event)' />")
-							);
-						break;
-					}
-				break;
-				case "ext":
-					switch(data[1]){
-						case "flow":
-							addpart(
-								$("<img src='parts/flow_tube.png' class='conct' id='wa2_ext_flow' draggable='true' ondragstart='drag(event)' />")
-							);
-						break;
-					}
+				
 				break;
 			}
 			
@@ -364,16 +427,41 @@
 		//$('.workarea').removeClass("red").removeClass("yellow").removeClass("blue");
 		switch(color) {
 			case "1":
+			  $('#sealSelected').val("HSN");
 			  $('.workarea').removeClass("red").removeClass("yellow").addClass("blue");
 			  break;
 			case "2":
+			  $('#sealSelected').val("Viton");
 			  $('.workarea').removeClass("red").removeClass("yellow").removeClass("blue");
 			  break;
 			case "3":
+			  $('#sealSelected').val("Aaflas");
 			  $('.workarea').removeClass("red").removeClass("blue").addClass("yellow");
 			  break;
 			case "4":
+			  $('#sealSelected').val("Floro Elastomer");
 			  $('.workarea').removeClass("yellow").removeClass("blue").addClass("red");
+			  break;
+		}
+		}
+
+		function changeSeal2(color){
+		switch(color) {
+			case "1":
+			  $('#sealSelected').val("HSN");
+			  $('.workarea.straddle .qup').removeClass("red").removeClass("yellow").addClass("blue");
+			  break;
+			case "2":
+			  $('#sealSelected').val("Viton");
+			  $('.workarea.straddle .qup').removeClass("red").removeClass("yellow").removeClass("blue");
+			  break;
+			case "3":
+			  $('#sealSelected').val("Aaflas");
+			  $('.workarea.straddle .qup').removeClass("red").removeClass("blue").addClass("yellow");
+			  break;
+			case "4":
+			  $('#sealSelected').val("Floro Elastomer");
+			  $('.workarea.straddle .qup').removeClass("yellow").removeClass("blue").addClass("red");
 			  break;
 		}
 		}
